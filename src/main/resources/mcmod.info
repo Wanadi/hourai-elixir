@@ -1,16 +1,18 @@
 [
-{
-  "modid": "houraielixir",
-  "name": "Hourai Elixir",
-  "description": "A mod that can make you completely immortal",
-  "version": "${version}",
-  "mcversion": "${mcversion}",
-  "url": "",
-  "updateUrl": "",
-  "authorList": ["MoriyaShiine"],
-  "credits": "",
-  "logoFile": "",
-  "screenshots": [],
-  "dependencies": []
-}
+  {
+	"modid": "houraielixir",
+	"name": "Hourai Elixir",
+	"description": "An (unobtainable) overpowered item that grants immortality",
+	"version": "${version}",
+	"mcversion": "${mcversion}",
+	"url": "",
+	"updateUrl": "",
+	"authorList": [
+	  "MoriyaShiine"
+	],
+	"credits": "cybercat5555 for textures",
+	"logoFile": "",
+	"screenshots": [],
+	"dependencies": []
+  }
 ]

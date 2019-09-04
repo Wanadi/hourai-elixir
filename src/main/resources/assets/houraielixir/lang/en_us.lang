@@ -1,5 +1,6 @@
 item.houraielixir.hourai_elixir.name=Hourai Elixir
 
-elixir.message0=The first taste grants you immunity to aging.
-elixir.message1=The second taste grants you immunity to illness.
-elixir.message2=The third taste grants you irreversible immortality.
+houraielixir.tooltip=Grants immortality when consumed
+
+houraielixir.become_immortal=After drinking from the legendary mixture, you have become irreversably immortal.
+houraielixir.already_immortal=Drinking the concotion did nothing, as you are already immortal.

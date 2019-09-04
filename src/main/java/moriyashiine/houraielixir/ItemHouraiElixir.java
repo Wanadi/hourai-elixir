@@ -1,72 +1,62 @@
 package moriyashiine.houraielixir;
 
+import net.minecraft.client.resources.I18n;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Items;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
 
-public class ItemHouraiElixir extends Item
-{
-	public ItemHouraiElixir()
-	{
-		setRegistryName(HouraiElixir.MODID, "hourai_elixir");
-		setTranslationKey(getRegistryName().toString().replace(":", "."));
-		setCreativeTab(CreativeTabs.BREWING);
+import javax.annotation.Nullable;
+import java.util.List;
+
+@SuppressWarnings({"NullableProblems", "ConstantConditions"})
+class ItemHouraiElixir extends Item {
+	ItemHouraiElixir() {
+		super();
+		String name = "hourai_elixir";
+		setRegistryName(name);
+		setTranslationKey(HouraiElixir.MODID + "." + name);
+		setCreativeTab(CreativeTabs.MISC);
 		setMaxStackSize(1);
-		setMaxDamage(3);
 	}
 	
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand)
-	{
-		if (!world.isRemote)
-		{
-			ExtendedPlayer cap = player.getCapability(ExtendedPlayer.CAPABILITY, null);
-			if (cap.level < 3)
-			{
-				player.setActiveHand(hand);
-				return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, player.getHeldItem(hand));
-			}
+	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand) {
+		return Items.POTIONITEM.onItemRightClick(world, player, hand);
+	}
+	
+	@Override
+	public EnumAction getItemUseAction(ItemStack stack) {
+		return Items.POTIONITEM.getItemUseAction(stack);
+	}
+	
+	@Override
+	public ItemStack onItemUseFinish(ItemStack stack, World world, EntityLivingBase entity) {
+		if (entity instanceof EntityPlayer) {
+			ExtendedPlayer cap = entity.getCapability(ExtendedPlayer.CAPABILITY, null);
+			String message = cap.immortal ? "houraielixir.already_immortal" : "houraielixir.become_immortal";
+			if (!world.isRemote) ((EntityPlayer) entity).sendStatusMessage(new TextComponentTranslation(message), false);
+			cap.immortal = true;
+			return new ItemStack(Items.GLASS_BOTTLE);
 		}
-		return super.onItemRightClick(world, player, hand);
+		return super.onItemUseFinish(stack, world, entity);
 	}
 	
 	@Override
-	public EnumAction getItemUseAction(ItemStack stack)
-	{
-		return EnumAction.DRINK;
+	public int getMaxItemUseDuration(ItemStack stack) {
+		return Items.POTIONITEM.getMaxItemUseDuration(stack);
 	}
 	
 	@Override
-	public ItemStack onItemUseFinish(ItemStack stack, World world, EntityLivingBase living)
-	{
-		if (living instanceof EntityPlayer)
-		{
-			EntityPlayer player = (EntityPlayer) living;
-			if (!player.isCreative()) stack.damageItem(1, player);
-			if (!player.world.isRemote)
-			{
-				ExtendedPlayer cap = player.getCapability(ExtendedPlayer.CAPABILITY, null);
-				if (cap.level < 3)
-				{
-					int level = cap.level++;
-					player.sendMessage(new TextComponentTranslation("elixir.message" + level, level));
-				}
-			}
-		}
-		return super.onItemUseFinish(stack, world, living);
-	}
-	
-	@Override
-	public int getMaxItemUseDuration(ItemStack stack)
-	{
-		return 32;
+	public void addInformation(ItemStack stack, @Nullable World world, List<String> tooltip, ITooltipFlag flag) {
+		tooltip.add(I18n.format("houraielixir.tooltip"));
 	}
 }
