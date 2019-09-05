@@ -13,7 +13,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 @SuppressWarnings({"unused", "WeakerAccess"})
 @Mod(modid = HouraiElixir.MODID, name = HouraiElixir.NAME, version = HouraiElixir.VERSION)
 public class HouraiElixir {
-	static final String MODID = "houraielixir", NAME = "Hourai Elixir", VERSION = "1.0";
+	static final String MODID = "houraielixir", NAME = "Hourai Elixir", VERSION = "1.0.1";
 	
 	@SidedProxy(serverSide = "moriyashiine.houraielixir.ServerProxy", clientSide = "moriyashiine.houraielixir.ClientProxy")
 	static ServerProxy proxy;

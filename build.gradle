@@ -9,7 +9,7 @@ buildscript {
 }
 apply plugin: 'net.minecraftforge.gradle.forge'
 
-version = "1.0"
+version = "1.0.1"
 group = "moriyashiine.houraielixir"
 archivesBaseName = "houraielixir"
 
@@ -51,6 +51,6 @@ processResources {
     }
 }
 
-sourceSets {
-    main { output.resourcesDir = output.classesDir }
-}
+//sourceSets {
+//    main { output.resourcesDir = output.classesDir }
+//}

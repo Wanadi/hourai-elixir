@@ -8,6 +8,7 @@ import net.minecraft.init.SoundEvents;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.PotionEffect;
+import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
@@ -24,7 +25,6 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Collection;
 
 @SuppressWarnings("ConstantConditions")
 public class ExtendedPlayer implements ICapabilitySerializable<NBTTagCompound>, Capability.IStorage<ExtendedPlayer>
@@ -95,7 +95,7 @@ public class ExtendedPlayer implements ICapabilitySerializable<NBTTagCompound>, 
 				ExtendedPlayer cap = living.getCapability(CAPABILITY, null);
 				if (cap.immortal) {
 					if (cap.timer == 0) {
-						Collection<PotionEffect> effects = living.getActivePotionEffects();
+						PotionEffect[] effects = living.getActivePotionEffects().toArray(new PotionEffect[0]);
 						living.clearActivePotions();
 						for (PotionEffect effect : effects) if (!effect.getPotion().isBadEffect()) living.addPotionEffect(effect);
 					}
@@ -132,7 +132,8 @@ public class ExtendedPlayer implements ICapabilitySerializable<NBTTagCompound>, 
 				if (!world.isRemote) {
 					ExtendedPlayer cap = entity.getCapability(CAPABILITY, null);
 					if (cap.immortal && entity.getHealth() - event.getAmount() <= 0) {
-						if (entity.posY > -64) {
+						boolean isVoid = entity.posY <= -64 && event.getSource() == DamageSource.OUT_OF_WORLD;
+						if (!isVoid) {
 							event.setCanceled(true);
 							entity.heal(entity.getMaxHealth() / 2);
 							world.playSound(null, entity.getPosition(), SoundEvents.BLOCK_CHORUS_FLOWER_GROW, SoundCategory.PLAYERS, 1, 1);
