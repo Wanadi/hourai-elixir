@@ -1,36 +1,29 @@
 package moriyashiine.houraielixir;
 
 import net.minecraft.item.Item;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.Mod.EventHandler;
-import net.minecraftforge.fml.common.SidedProxy;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
-@SuppressWarnings({"unused", "WeakerAccess"})
-@Mod(modid = HouraiElixir.MODID, name = HouraiElixir.NAME, version = HouraiElixir.VERSION)
+@Mod(HouraiElixir.MODID)
 public class HouraiElixir {
-	static final String MODID = "houraielixir", NAME = "Hourai Elixir", VERSION = "1.0.1";
-	
-	@SidedProxy(serverSide = "moriyashiine.houraielixir.ServerProxy", clientSide = "moriyashiine.houraielixir.ClientProxy")
-	static ServerProxy proxy;
-	
-	@EventHandler
-	public void preInit(FMLPreInitializationEvent event) {
-		CapabilityManager.INSTANCE.register(ExtendedPlayer.class, new ExtendedPlayer(), ExtendedPlayer::new);
-		MinecraftForge.EVENT_BUS.register(new ExtendedPlayer.Handler());
-	}
-	
-	@Mod.EventBusSubscriber
-	static class Registry {
-		@SubscribeEvent
-		public static void registerItems(RegistryEvent.Register<Item> event) {
-			Item item = new ItemHouraiElixir();
-			event.getRegistry().register(item);
-			proxy.registerTexture(item);
-		}
-	}
+    static final String MODID = "houraielixir";
+    
+    public HouraiElixir() {
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
+    }
+    
+    private void setup(final FMLCommonSetupEvent event) {
+        HouraiCapability.register();
+    }
+    
+    @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
+    public static class RegistryEvents {
+        @SubscribeEvent
+        public static void registerItems(final RegistryEvent.Register<Item> event) {
+            event.getRegistry().register(new HouraiElixirItem().setRegistryName(MODID, "hourai_elixir"));
+        }
+    }
 }

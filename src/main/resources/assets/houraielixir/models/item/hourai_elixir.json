@@ -1,6 +1,6 @@
 {
   "parent": "item/generated",
   "textures": {
-	"layer0": "houraielixir:items/hourai_elixir"
+	"layer0": "houraielixir:item/hourai_elixir"
   }
 }
