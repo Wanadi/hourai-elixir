@@ -7,6 +7,7 @@ import net.minecraft.item.*;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 
@@ -55,6 +56,6 @@ public class HouraiElixirItem extends Item {
 	
 	@Override
 	public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> tooltips, ITooltipFlag flags) {
-		tooltips.add(new TranslationTextComponent(HouraiElixir.MODID + ".tooltip"));
+		tooltips.add(new TranslationTextComponent(HouraiElixir.MODID + ".tooltip").applyTextStyle(TextFormatting.GRAY));
 	}
 }
