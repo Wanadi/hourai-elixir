@@ -139,7 +139,7 @@ public class HouraiCapability implements ICapabilitySerializable<CompoundNBT> {
 						world.playSound(null, entity.getPosition(), SoundEvents.BLOCK_CHORUS_FLOWER_GROW, SoundCategory.PLAYERS, 1, 1);
 						entity.heal(Float.MAX_VALUE);
 						houraiCap.timer += 20;
-						if (entity.posY <= -64 && event.getSource() == DamageSource.OUT_OF_WORLD && entity instanceof ServerPlayerEntity) {
+						if (entity.getPosition().getY() <= -64 && event.getSource() == DamageSource.OUT_OF_WORLD && entity instanceof ServerPlayerEntity) {
 							ServerPlayerEntity player = (ServerPlayerEntity) entity;
 							ServerWorld serverWorld = DimensionManager.getWorld(player.server, player.getSpawnDimension(), true, true);
 							if (serverWorld != null) {

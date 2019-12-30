@@ -23,7 +23,7 @@ public class HouraiElixir {
     public static class RegistryEvents {
         @SubscribeEvent
         public static void registerItems(final RegistryEvent.Register<Item> event) {
-            event.getRegistry().register(new HouraiElixirItem().setRegistryName(MODID, "hourai_elixir"));
+            event.getRegistry().register(new HouraiElixirItem().setRegistryName("hourai_elixir"));
         }
     }
 }
