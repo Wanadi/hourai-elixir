@@ -12,8 +12,10 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
+import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
@@ -21,6 +23,7 @@ import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.fml.common.eventhandler.Event;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import javax.annotation.Nonnull;
@@ -30,7 +33,7 @@ import javax.annotation.Nullable;
 public class ExtendedPlayer implements ICapabilitySerializable<NBTTagCompound>, Capability.IStorage<ExtendedPlayer>
 {
 	@CapabilityInject(ExtendedPlayer.class)
-	static final Capability<ExtendedPlayer> CAPABILITY = null;
+	static final Capability<ExtendedPlayer> CAP = null;
 	
 	boolean immortal = false;
 	private int timer = 0;
@@ -59,89 +62,92 @@ public class ExtendedPlayer implements ICapabilitySerializable<NBTTagCompound>, 
 	@Nullable
 	@Override
 	public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing) {
-		return capability == CAPABILITY ? CAPABILITY.cast(this) : null;
+		return capability == CAP ? CAP.cast(this) : null;
 	}
 	
 	@Override
 	public NBTTagCompound serializeNBT() {
-		return (NBTTagCompound) CAPABILITY.getStorage().writeNBT(CAPABILITY, this, null);
+		return (NBTTagCompound) CAP.getStorage().writeNBT(CAP, this, null);
 	}
 	
 	@Override
 	public void deserializeNBT(NBTTagCompound nbt) {
-		CAPABILITY.getStorage().readNBT(CAPABILITY, this, null, nbt);
+		CAP.getStorage().readNBT(CAP, this, null, nbt);
 	}
 	
-	public static class Handler
-	{
-		private static final ResourceLocation LOC = new ResourceLocation(HouraiElixir.MODID, "extended_player");
+	private static class Handler {
+		private static final ResourceLocation KEY = new ResourceLocation(HouraiElixir.MODID, "hourai_data");
 		
 		@SubscribeEvent
-		public void attachCapability(AttachCapabilitiesEvent<Entity> event) {
-			if (event.getObject() instanceof EntityPlayer) event.addCapability(LOC, new ExtendedPlayer());
+		public void attachCapabilities(AttachCapabilitiesEvent<Entity> event) {
+			if (event.getObject() instanceof EntityPlayer) event.addCapability(KEY, new ExtendedPlayer());
 		}
 		
 		@SubscribeEvent
 		public void clonePlayer(PlayerEvent.Clone event) {
-			event.getEntityPlayer().getCapability(CAPABILITY, null).deserializeNBT(event.getOriginal().getCapability(CAPABILITY, null).serializeNBT());
+			event.getEntityPlayer().getCapability(CAP, null).deserializeNBT(event.getOriginal().getCapability(CAP, null).serializeNBT());
 		}
 		
 		@SubscribeEvent
-		public void livingUpdate(LivingEvent.LivingUpdateEvent event)
-		{
-			EntityLivingBase living = event.getEntityLiving();
-			World world = living.world;
-			if (!world.isRemote && living.ticksExisted % 20 == 0 && living instanceof EntityPlayer) {
-				ExtendedPlayer cap = living.getCapability(CAPABILITY, null);
-				if (cap.immortal) {
-					if (cap.timer == 0) {
-						PotionEffect[] effects = living.getActivePotionEffects().toArray(new PotionEffect[0]);
-						living.clearActivePotions();
-						for (PotionEffect effect : effects) if (!effect.getPotion().isBadEffect()) living.addPotionEffect(effect);
-					}
-					else {
-						if (cap.timer > 0) {
-							cap.timer = MathHelper.clamp(cap.timer, 0, 80);
-							cap.timer--;
-							living.addPotionEffect(new PotionEffect(MobEffects.WEAKNESS, 80, 0, false, false));
-							if (cap.timer >= 20) {
-								living.addPotionEffect(new PotionEffect(MobEffects.WEAKNESS, 80, 1, false, false));
-								living.addPotionEffect(new PotionEffect(MobEffects.SLOWNESS, 80, 0, false, false));
-								if (cap.timer >= 40) {
-									living.addPotionEffect(new PotionEffect(MobEffects.WEAKNESS, 80, 1, false, false));
-									living.addPotionEffect(new PotionEffect(MobEffects.SLOWNESS, 80, 1));
-									living.addPotionEffect(new PotionEffect(MobEffects.MINING_FATIGUE, 80, 0, false, false));
-									if (cap.timer >= 60) {
-										living.addPotionEffect(new PotionEffect(MobEffects.WEAKNESS, 80, 2, false, false));
-										living.addPotionEffect(new PotionEffect(MobEffects.SLOWNESS, 80, 2, false, false));
-										living.addPotionEffect(new PotionEffect(MobEffects.MINING_FATIGUE, 80, 1, false, false));
-									}
+		public void livingUpdate(LivingEvent.LivingUpdateEvent event) {
+			EntityLivingBase entity = event.getEntityLiving();
+			if (!entity.world.isRemote && entity.ticksExisted % 20 == 0) {
+				entity.getCapability(CAP).ifPresent(houraiCap -> {
+					if (houraiCap.timer > 0) {
+						houraiCap.timer = (byte) MathHelper.clamp(--houraiCap.timer, 0, 80);
+						entity.addPotionEffect(new PotionEffect(MobEffects.WEAKNESS, 80, 0, true, false));
+						if (houraiCap.timer >= 20) {
+							entity.addPotionEffect(new PotionEffect(MobEffects.WEAKNESS, 80, 1, true, false));
+							entity.addPotionEffect(new PotionEffect(MobEffects.SLOWNESS, 80, 0, true, false));
+							if (houraiCap.timer >= 40) {
+								entity.addPotionEffect(new PotionEffect(MobEffects.WEAKNESS, 80, 1, true, false));
+								entity.addPotionEffect(new PotionEffect(MobEffects.SLOWNESS, 80, 1, true, false));
+								entity.addPotionEffect(new PotionEffect(MobEffects.MINING_FATIGUE, 80, 0, true, false));
+								if (houraiCap.timer >= 60) {
+									entity.addPotionEffect(new PotionEffect(MobEffects.WEAKNESS, 80, 2, true, false));
+									entity.addPotionEffect(new PotionEffect(MobEffects.SLOWNESS, 80, 2, true, false));
+									entity.addPotionEffect(new PotionEffect(MobEffects.MINING_FATIGUE, 80, 1, true, false));
 								}
 							}
 						}
 					}
-				}
+				});
 			}
 		}
 		
 		@SubscribeEvent
+		public void potionApplicable(PotionEvent.PotionApplicableEvent event) {
+			EntityLivingBase entity = event.getEntityLiving();
+			if (!entity.world.isRemote) {
+				entity.getCapability(CAP).ifPresent(houraiCap -> {
+					if (houraiCap.immortal && houraiCap.timer <= 0 && !event.getPotionEffect().getPotion().isBeneficial()) event.setResult(Event.Result.DENY);
+				});
+			}
+		}
+		
+		@SuppressWarnings("ConstantConditions")
+		@SubscribeEvent
 		public void livingDamage(LivingDamageEvent event) {
 			EntityLivingBase entity = event.getEntityLiving();
-			if (entity instanceof EntityPlayer) {
-				World world = entity.world;
-				if (!world.isRemote) {
-					ExtendedPlayer cap = entity.getCapability(CAPABILITY, null);
-					if (cap.immortal && entity.getHealth() - event.getAmount() <= 0) {
-						boolean isVoid = entity.posY <= -64 && event.getSource() == DamageSource.OUT_OF_WORLD;
-						if (!isVoid) {
-							event.setCanceled(true);
-							entity.heal(entity.getMaxHealth() / 2);
-							world.playSound(null, entity.getPosition(), SoundEvents.BLOCK_CHORUS_FLOWER_GROW, SoundCategory.PLAYERS, 1, 1);
-							cap.timer += 20;
+			World world = entity.world;
+			if (!world.isRemote) {
+				entity.getCapability(CAP).ifPresent(houraiCap -> {
+					if (houraiCap.immortal && entity.getHealth() - event.getAmount() <= 0) {
+						event.setCanceled(true);
+						world.playSound(null, entity.getPosition(), SoundEvents.BLOCK_CHORUS_FLOWER_GROW, SoundCategory.PLAYERS, 1, 1);
+						entity.heal(Float.MAX_VALUE);
+						houraiCap.timer += 20;
+						if (entity.getPosition().getY() <= -64 && event.getSource() == DamageSource.OUT_OF_WORLD && entity instanceof ServerPlayerEntity) {
+							ServerPlayerEntity player = (ServerPlayerEntity) entity;
+							ServerWorld serverWorld = DimensionManager.getWorld(player.server, player.getSpawnDimension(), true, true);
+							if (serverWorld != null) {
+								BlockPos bed = player.getBedLocation(player.getSpawnDimension());
+								BlockPos spawnPos = bed == null ? serverWorld.getSpawnPoint() : bed;
+								player.teleport(serverWorld, spawnPos.getX(), spawnPos.getY(), spawnPos.getZ(), player.rotationYaw, player.rotationPitch);
+							}
 						}
-						else cap.timer = 0;
 					}
-				}
+				});
 			}
 		}
 	}

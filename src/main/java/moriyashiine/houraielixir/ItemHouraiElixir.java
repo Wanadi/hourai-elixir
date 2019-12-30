@@ -41,7 +41,7 @@ class ItemHouraiElixir extends Item {
 	@Override
 	public ItemStack onItemUseFinish(ItemStack stack, World world, EntityLivingBase entity) {
 		if (entity instanceof EntityPlayer) {
-			ExtendedPlayer cap = entity.getCapability(ExtendedPlayer.CAPABILITY, null);
+			ExtendedPlayer cap = entity.getCapability(ExtendedPlayer.CAP, null);
 			String message = cap.immortal ? "houraielixir.already_immortal" : "houraielixir.become_immortal";
 			if (!world.isRemote) ((EntityPlayer) entity).sendStatusMessage(new TextComponentTranslation(message), false);
 			cap.immortal = true;
