@@ -37,12 +37,15 @@ public class HouraiElixirItem extends Item {
 	@Nonnull
 	public ItemStack onItemUseFinish(@Nonnull ItemStack stack, @Nonnull World world, @Nonnull LivingEntity entity) {
 		AtomicReference<ItemStack> fin = new AtomicReference<>(super.onItemUseFinish(stack, world, entity));
-		if (entity instanceof PlayerEntity) entity.getCapability(HouraiCapability.CAP).ifPresent(houraiCap -> {
-			String message = houraiCap.immortal ? "houraielixir.already_immortal" : "houraielixir.become_immortal";
-			if (!world.isRemote) ((PlayerEntity) entity).sendStatusMessage(new TranslationTextComponent(message), false);
-			houraiCap.immortal = true;
-			fin.set(new ItemStack(Items.GLASS_BOTTLE));
-		});
+		if (entity instanceof PlayerEntity) {
+			PlayerEntity player = (PlayerEntity) entity;
+			player.getCapability(HouraiCapability.CAP).ifPresent(houraiCap -> {
+				String message = HouraiElixir.MODID + (houraiCap.immortal ? ".already_immortal" : ".become_immortal");
+				if (!world.isRemote) player.sendStatusMessage(new TranslationTextComponent(message), false);
+				houraiCap.immortal = true;
+				if (!player.isCreative()) fin.set(new ItemStack(Items.GLASS_BOTTLE));
+			});
+		}
 		return fin.get();
 	}
 	
