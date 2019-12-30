@@ -41,11 +41,12 @@ class ItemHouraiElixir extends Item {
 	@Override
 	public ItemStack onItemUseFinish(ItemStack stack, World world, EntityLivingBase entity) {
 		if (entity instanceof EntityPlayer) {
-			ExtendedPlayer cap = entity.getCapability(ExtendedPlayer.CAP, null);
+			EntityPlayer player = (EntityPlayer) entity;
+			HouraiCapability cap = player.getCapability(HouraiCapability.CAP, null);
 			String message = cap.immortal ? "houraielixir.already_immortal" : "houraielixir.become_immortal";
-			if (!world.isRemote) ((EntityPlayer) entity).sendStatusMessage(new TextComponentTranslation(message), false);
+			if (!world.isRemote) player.sendStatusMessage(new TextComponentTranslation(message), false);
 			cap.immortal = true;
-			return new ItemStack(Items.GLASS_BOTTLE);
+			if (!player.isCreative()) return new ItemStack(Items.GLASS_BOTTLE);
 		}
 		return super.onItemUseFinish(stack, world, entity);
 	}

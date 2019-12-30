@@ -20,8 +20,8 @@ public class HouraiElixir {
 	
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
-		CapabilityManager.INSTANCE.register(ExtendedPlayer.class, new ExtendedPlayer(), ExtendedPlayer::new);
-		MinecraftForge.EVENT_BUS.register(new ExtendedPlayer.Handler());
+		CapabilityManager.INSTANCE.register(HouraiCapability.class, new HouraiCapability(), HouraiCapability::new);
+		MinecraftForge.EVENT_BUS.register(new HouraiCapability.Handler());
 	}
 	
 	@Mod.EventBusSubscriber
