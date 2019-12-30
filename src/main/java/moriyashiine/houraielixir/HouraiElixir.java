@@ -15,7 +15,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 public class HouraiElixir {
 	static final String MODID = "houraielixir", NAME = "Hourai Elixir", VERSION = "1.0.1";
 	
-	@SidedProxy(serverSide = "moriyashiine.houraielixir.ServerProxy", clientSide = "moriyashiine.houraielixir.ClientProxy")
+	@SidedProxy(serverSide = "moriyashiine." + MODID + ".ServerProxy", clientSide = "moriyashiine." + MODID + ".ClientProxy")
 	static ServerProxy proxy;
 	
 	@EventHandler

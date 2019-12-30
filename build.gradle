@@ -11,7 +11,6 @@ apply plugin: 'net.minecraftforge.gradle.forge'
 
 version = "1.0.1"
 group = "moriyashiine.houraielixir"
-archivesBaseName = "houraielixir"
 
 sourceCompatibility = targetCompatibility = '1.8'
 compileJava {
@@ -22,21 +21,6 @@ minecraft {
     version = "1.12.2-14.23.5.2768"
     runDir = "run"
     mappings = "stable_39"
-}
-
-repositories {
-    flatDir {
-        dirs 'libs'
-    }
-    maven {
-        name = "JEI"
-        url = "http://dvs1.progwml6.com/files/maven"
-    }
-}
-
-dependencies {
-	deobfProvided "mezz.jei:jei_1.12.2:4.15.0.268:api"
-	runtime "mezz.jei:jei_1.12.2:4.15.0.268"
 }
 
 processResources {
@@ -50,7 +34,3 @@ processResources {
         exclude 'mcmod.info'
     }
 }
-
-//sourceSets {
-//    main { output.resourcesDir = output.classesDir }
-//}
