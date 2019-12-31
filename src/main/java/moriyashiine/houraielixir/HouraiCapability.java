@@ -122,7 +122,7 @@ public class HouraiCapability implements ICapabilitySerializable<NBTTagCompound>
 			EntityLivingBase entity = event.getEntityLiving();
 			if (!entity.world.isRemote) {
 				HouraiCapability houraiCap = entity.getCapability(CAP, null);
-				if (houraiCap != null && houraiCap.immortal && houraiCap.timer <= 0 && !event.getPotionEffect().getPotion().isBeneficial()) event.setResult(Event.Result.DENY);
+				if (houraiCap != null && houraiCap.immortal && houraiCap.timer <= 0 && event.getPotionEffect().getPotion().isBadEffect()) event.setResult(Event.Result.DENY);
 			}
 		}
 		
