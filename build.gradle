@@ -1,37 +1,36 @@
 buildscript {
     repositories {
-        maven { url = 'https://files.minecraftforge.net/maven' }
+        maven { url = "https://files.minecraftforge.net/maven" }
         jcenter()
         mavenCentral()
     }
     dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true
+        classpath group: "net.minecraftforge.gradle", name: "ForgeGradle", version: "3.+", changing: true
     }
 }
-apply plugin: 'net.minecraftforge.gradle'
+apply plugin: "net.minecraftforge.gradle"
 
-version = '1.0.2.1'
-group = 'moriyashiine.houraielixir'
+version = "1.0.2.2"
+group = "moriyashiine.houraelixir"
+archivesBaseName = "houraelixir"
 
 minecraft {
-    mappings channel: 'snapshot', version: '20190719-1.14.3'
+    mappings channel: "stable", version: "60-1.15"
     runs {
         client {
-            workingDirectory project.file('run')
-            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
-            property 'forge.logging.console.level', 'debug'
+            workingDirectory project.file("run")
+            property "forge.logging.console.level", "debug"
             mods {
-                houraielixir {
+                houraelixir {
                     source sourceSets.main
                 }
             }
         }
         server {
-            workingDirectory project.file('run')
-            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
-            property 'forge.logging.console.level', 'debug'
+            workingDirectory project.file("run")
+            property "forge.logging.console.level", "debug"
             mods {
-                houraielixir {
+                houraelixir {
                     source sourceSets.main
                 }
             }
@@ -40,13 +39,13 @@ minecraft {
 }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.15.1-30.0.0'
+    minecraft "net.minecraftforge:forge:1.15.2-31.0.14"
 }
 
 jar {
     manifest {
         attributes([
-            "Specification-Title": "houraielixir",
+            "Specification-Title": "houraelixir",
             "Specification-Vendor": "moriyashiine",
             "Specification-Version": "1",
             "Implementation-Title": project.name,

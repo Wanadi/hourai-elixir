@@ -145,7 +145,7 @@ public class HouraiCapability implements ICapabilitySerializable<CompoundNBT> {
 							if (serverWorld != null) {
 								BlockPos bed = player.getBedLocation(player.getSpawnDimension());
 								BlockPos spawnPos = bed == null ? serverWorld.getSpawnPoint() : bed;
-								player.teleport(serverWorld, spawnPos.getX(), spawnPos.getY(), spawnPos.getZ(), player.rotationYaw, player.rotationPitch);
+								player.func_200619_a(serverWorld, spawnPos.getX(), spawnPos.getY(), spawnPos.getZ(), player.rotationYaw, player.rotationPitch);
 							}
 						}
 					}
