@@ -11,8 +11,8 @@ buildscript {
 apply plugin: "net.minecraftforge.gradle"
 
 version = "1.0.2.2"
-group = "moriyashiine.houraelixir"
-archivesBaseName = "houraelixir"
+group = "moriyashiine.houraielixir"
+archivesBaseName = "houraielixir"
 
 minecraft {
     mappings channel: "stable", version: "60-1.15"
@@ -45,7 +45,7 @@ dependencies {
 jar {
     manifest {
         attributes([
-            "Specification-Title": "houraelixir",
+            "Specification-Title": "houraielixir",
             "Specification-Vendor": "moriyashiine",
             "Specification-Version": "1",
             "Implementation-Title": project.name,
